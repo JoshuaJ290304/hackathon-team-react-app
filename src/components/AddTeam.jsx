@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 const AddTeam = () => {
 
@@ -18,11 +19,52 @@ const AddTeam = () => {
     tableNumber: ""
   });
 
+  const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
     setTeam({
       ...team,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+      const response = await axios.post(
+        "http://localhost:3000/add-team",
+        team
+      );
+
+      setMessage(response.data.message);
+
+      setTeam({
+        teamId: "",
+        teamName: "",
+        teamLeaderName: "",
+        leaderEmail: "",
+        leaderPhone: "",
+        collegeName: "",
+        numberOfMembers: "",
+        projectTitle: "",
+        problemStatementTrack: "",
+        technologyStack: "",
+        mentorName: "",
+        registrationDate: "",
+        tableNumber: ""
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      setMessage("Failed to Register Team");
+
+    }
+
   };
 
   const handleReset = () => {
@@ -43,6 +85,8 @@ const AddTeam = () => {
       tableNumber: ""
     });
 
+    setMessage("");
+
   };
 
   return (
@@ -59,167 +103,72 @@ const AddTeam = () => {
 
         <div className="card-body">
 
-          <form>
+          {message && (
+            <div className="alert alert-info text-center">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
 
             <div className="row">
 
-              <div className="col-md-6 mb-3">
-                <label>Team ID</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="teamId"
-                  value={team.teamId}
-                  onChange={handleChange}
-                />
-              </div>
+              {[
+                ["Team ID","teamId","text"],
+                ["Team Name","teamName","text"],
+                ["Leader Name","teamLeaderName","text"],
+                ["Leader Email","leaderEmail","email"],
+                ["Leader Phone","leaderPhone","text"],
+                ["College Name","collegeName","text"],
+                ["No. of Members","numberOfMembers","number"],
+                ["Project Title","projectTitle","text"],
+                ["Problem Statement Track","problemStatementTrack","text"],
+                ["Technology Stack","technologyStack","text"],
+                ["Mentor Name","mentorName","text"],
+                ["Registration Date","registrationDate","date"],
+                ["Table Number","tableNumber","text"]
+              ].map(([label,name,type]) => (
 
-              <div className="col-md-6 mb-3">
-                <label>Team Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="teamName"
-                  value={team.teamName}
-                  onChange={handleChange}
-                />
-              </div>
+                <div
+                  className={
+                    name==="tableNumber"
+                    ? "col-md-12 mb-3"
+                    : "col-md-6 mb-3"
+                  }
+                  key={name}
+                >
 
-              <div className="col-md-6 mb-3">
-                <label>Leader Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="teamLeaderName"
-                  value={team.teamLeaderName}
-                  onChange={handleChange}
-                />
-              </div>
+                  <label className="form-label">
+                    {label}
+                  </label>
 
-              <div className="col-md-6 mb-3">
-                <label>Leader Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="leaderEmail"
-                  value={team.leaderEmail}
-                  onChange={handleChange}
-                />
-              </div>
+                  <input
+                    type={type}
+                    className="form-control"
+                    name={name}
+                    value={team[name]}
+                    onChange={handleChange}
+                    required
+                  />
 
-              <div className="col-md-6 mb-3">
-                <label>Leader Phone</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="leaderPhone"
-                  value={team.leaderPhone}
-                  onChange={handleChange}
-                />
-              </div>
+                </div>
 
-              <div className="col-md-6 mb-3">
-                <label>College Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="collegeName"
-                  value={team.collegeName}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>No. of Members</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="numberOfMembers"
-                  value={team.numberOfMembers}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Project Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="projectTitle"
-                  value={team.projectTitle}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Problem Statement Track</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="problemStatementTrack"
-                  value={team.problemStatementTrack}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Technology Stack</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="technologyStack"
-                  value={team.technologyStack}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Mentor Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="mentorName"
-                  value={team.mentorName}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Registration Date</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="registrationDate"
-                  value={team.registrationDate}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-12 mb-3">
-                <label>Table Number</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="tableNumber"
-                  value={team.tableNumber}
-                  onChange={handleChange}
-                />
-              </div>
+              ))}
 
             </div>
 
             <div className="text-center">
 
               <button
-                type="button"
                 className="btn btn-primary me-3"
+                type="submit"
               >
                 Register Team
               </button>
 
               <button
-                type="button"
                 className="btn btn-secondary"
+                type="button"
                 onClick={handleReset}
               >
                 Reset
